@@ -3,12 +3,12 @@ import { CreateTaskDTO } from './dto/create-task.dto';
 import { UpdateTaskDTO } from './dto/update-task.dto';
 import { GetTasksFilterDTO } from './dto/get-tasks-filter-dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Task, TaskDocument } from './task.schema';
+import { Task, TaskDocument, TaskModelName } from './task.schema';
 import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class TasksService {
-  constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) { }
+  constructor(@InjectModel(TaskModelName) private taskModel: Model<TaskDocument>) { }
 
   createTask(author: ObjectId, createTaskDTO: CreateTaskDTO): Promise<Task> {
     const { title, description } = createTaskDTO;

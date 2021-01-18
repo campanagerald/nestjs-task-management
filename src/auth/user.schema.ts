@@ -1,16 +1,35 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
-export type UserDocument = User & Document;
+import { Document, Model, Schema, } from "mongoose";
 
-@Schema({
-  timestamps: true
-})
-export class User {
-  @Prop({ unique: true })
-  username: string
+export const UserModelName = 'User';
 
-  @Prop()
-  password: string
+export interface User {
+  username: string;
+  password: string;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export interface UserDocument extends User, Document { }
+
+export interface UserModel extends Model<UserDocument> {
+  findOneByUsernameAndSelect(username: string, select?: { password: 0 | 1 }): Promise<UserDocument>
+}
+
+export const UserSchema = new Schema<UserDocument>(
+  {
+    username: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true
+  }
+);
+
+UserSchema.statics.findOneByUsernameAndSelect = async function (username: string, select?: { password: 0 | 1 }): Promise<UserDocument> {
+  return this.findOne({ username }).select(select);
+}
+

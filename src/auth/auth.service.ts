@@ -2,7 +2,7 @@ import { ConflictException, Injectable, InternalServerErrorException, Unauthoriz
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserCredentialsDTO } from './dto/user-credentials.dto';
-import { User, UserDocument } from './user.schema';
+import { User, UserDocument, UserModelName } from './user.schema';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JWTPayload } from 'src/core/interface/JWTPayload.interface';
@@ -10,7 +10,7 @@ import { JWTPayload } from 'src/core/interface/JWTPayload.interface';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(UserModelName) private userModel: Model<UserDocument>,
     private jwtService: JwtService
   ) { }
 

@@ -1,32 +1,39 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, ObjectId, Types } from "mongoose";
+import { Document, ObjectId, Schema, Types } from "mongoose";
 import { TaskStatus } from "./task.enum";
 
-export type TaskDocument = Task & Document;
+export const TaskModelName = 'Task';
 
-@Schema({
-  timestamps: true
-})
-export class Task {
-  @Prop()
+export interface Task {
   title: string;
-
-  @Prop()
   description: string;
-
-  @Prop({
-    enum: [TaskStatus.DONE, TaskStatus.IN_PROGRESS, TaskStatus.OPEN],
-    default: TaskStatus.OPEN
-  })
   status: TaskStatus;
-
-  @Prop({
-    required: true,
-    type: Types.ObjectId
-  })
-  author: ObjectId
+  author: ObjectId;
 }
 
-export const TaskSchema = SchemaFactory.createForClass(Task);
+export interface TaskDocument extends Task, Document { }
 
-
+export const TaskSchema = new Schema<TaskDocument>(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: [TaskStatus.OPEN, TaskStatus.IN_PROGRESS, TaskStatus.DONE],
+      default: TaskStatus.OPEN
+    },
+    author: {
+      type: Types.ObjectId,
+      enum: [TaskStatus.OPEN, TaskStatus.IN_PROGRESS, TaskStatus.DONE],
+      default: TaskStatus.OPEN
+    }
+  },
+  {
+    timestamps: true
+  }
+);
